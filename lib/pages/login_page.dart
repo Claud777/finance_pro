@@ -13,22 +13,18 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _signIn() async {
     try {
-      await Supabase.instance.client.auth.signInWithOtp(
-        email: _emailController.text.trim(),
-        emailRedirectTo: 'io.supabase.flutter://login-callback/',
-      );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Verifique a tua caixa de entrada!')),
-        );
-      }
-    } catch (e) {
-  String message = 'Ocorreu um erro inesperado.';
-  if (e.toString().contains('500')) {
-    message = 'Muitas tentativas! Por favor, aguarda alguns minutos antes de tentar novamente.';
-  }
+  await Supabase.instance.client.auth.signInWithOtp(
+    email: _emailController.text.trim(),
+    emailRedirectTo: 'io.supabase.flutter://login-callback/',
+  );
+} on AuthException catch (error) {
+  // Captura especificamente erros de autenticação e limites
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(message), backgroundColor: Colors.orange),
+    SnackBar(content: Text(error.message), backgroundColor: Colors.red),
+  );
+} catch (error) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Erro inesperado. Tente novamente em 1 hora.'), backgroundColor: Colors.orange),
   );
 }
   }

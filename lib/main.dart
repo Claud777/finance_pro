@@ -28,17 +28,24 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     
-    Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-      final Session? session = data.session;
-      final AuthChangeEvent event = data.event;
+Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    debugPrint('DEBUG: Evento de Auth -> ${data.event}');
+    if (data.session != null) {
+      debugPrint('DEBUG: Usuário logado: ${data.session!.user.email}');
+    }
+  });
+  _setupDeepLinkListener();
+}
 
-      debugPrint('Evento de Auth: $event');
-      
-      if (session != null) {
-        debugPrint('Sessão ativa encontrada para: ${session.user.email}');
-      }
-    });
+void _setupDeepLinkListener() {
+  // O Supabase Flutter já tenta capturar o link automaticamente, 
+  // mas em alguns modelos como o Moto G42, precisamos garantir que o link
+  // inicial seja processado se o app for aberto via URL.
+  final session = Supabase.instance.client.auth.currentSession;
+  if (session != null) {
+     debugPrint('DEBUG: Sessão inicial detectada');
   }
+}
 
   @override
   Widget build(BuildContext context) {
