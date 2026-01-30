@@ -13,20 +13,28 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _signIn() async {
     try {
-  await Supabase.instance.client.auth.signInWithOtp(
-    email: _emailController.text.trim(),
-    emailRedirectTo: 'io.supabase.flutter://login-callback/',
-  );
-} on AuthException catch (error) {
-  // Captura especificamente erros de autenticação e limites
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(error.message), backgroundColor: Colors.red),
-  );
-} catch (error) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Erro inesperado. Tente novamente em 1 hora.'), backgroundColor: Colors.orange),
-  );
-}
+      await Supabase.instance.client.auth.signInWithOtp(
+        email: _emailController.text.trim(),
+        emailRedirectTo: 'io.supabase.flutter://login-callback/',
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Verifique seu e-mail para o link de login!'),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Erro ao enviar link'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -42,7 +50,10 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const InputDecoration(labelText: 'Seu E-mail'),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: _signIn, child: const Text('Enviar Link de Login')),
+            ElevatedButton(
+              onPressed: _signIn,
+              child: const Text('Enviar Link de Login'),
+            ),
           ],
         ),
       ),

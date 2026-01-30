@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
         title: const Text('Dashboard'),
         actions: [
           IconButton(
-            onPressed: () => _signOut(context), 
+            onPressed: () => _signOut(context),
             icon: const Icon(Icons.logout),
           ),
         ],
