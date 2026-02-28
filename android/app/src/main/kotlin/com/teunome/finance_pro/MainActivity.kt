@@ -1,4 +1,4 @@
-package com.teunome.finance_pro
+package com.claud.finance_pro
 
 import io.flutter.embedding.android.FlutterActivity
 
